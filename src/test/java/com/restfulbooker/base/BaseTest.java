@@ -6,7 +6,6 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 
 public class BaseTest {
@@ -17,7 +16,7 @@ public class BaseTest {
         // Get auth token ONCE for the entire suite
         token = TokenManager.getToken();
     }
-    @BeforeMethod
+    @BeforeClass
     public void setUp(){
         spec = new RequestSpecBuilder()
                 .setBaseUri(ConfigReader.get("base.url"))

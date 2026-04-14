@@ -6,18 +6,21 @@ import static io.restassured.RestAssured.given;
 
 public class TokenManager {
     public static String getToken(){
-        String body = """
+       /* String body = """
                 {
                     "username" : "%s",
                     "password" : "%s"
                 }  """.formatted(
                         ConfigReader.get("auth.username"),
                 ConfigReader.get("auth.password")
-        );
+        );*/
+
         Response response = given()
+                .baseUri(ConfigReader.get("base.url"))
                 .contentType("application/json")
-                .body(body)
-                .when().post(ConfigReader.get(baseURI)+"/auth")
+                .body("{ \"username\": \""+ConfigReader.get("auth.username")+"\", \"password\": \""
+                        +ConfigReader.get("auth.password")+"\" }")
+                .when().post("/auth")
                 .then()
                 .extract().response();
         if (response.statusCode() != 200) {
