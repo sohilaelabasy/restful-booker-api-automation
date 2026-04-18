@@ -8,6 +8,7 @@ import io.restassured.response.Response;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 public class UpdateBookingTest extends BaseTest {
@@ -138,7 +139,7 @@ public class UpdateBookingTest extends BaseTest {
         payload.setAdditionalneeds("Lunch");
 
         Response response = api.updateBooking(bookingId, payload, token);
-        response.then().statusCode(400);
+        assertThat(response.statusCode()).isEqualTo(400);
     }
 
     //Test case 7 : checkout before checkin
@@ -155,6 +156,7 @@ public class UpdateBookingTest extends BaseTest {
         payload.setAdditionalneeds("Lunch");
 
         Response response = api.updateBooking(bookingId, payload, token);
-        response.then().statusCode(400);
+        assertThat(response.statusCode()).isEqualTo(400);
     }
 }
+
