@@ -32,7 +32,7 @@ public class DeleteBookingTest extends BaseTest {
     }
 
     //Test case 1 - Valid ID deletion returns 201
-    @Test(groups = {"regression" , "smoke"})
+    @Test(groups = {"smoke","regression" })
     @Story("Delete booking with valid token and valid id")
     @Description("Positive Test: Verify that DELETE /booking/{id} returns 201 when a valid token and existing booking id are provided")
     @Severity(SeverityLevel.CRITICAL)

@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Feature("Create Booking")
 public class CreateBookingTest extends BaseTest {
     //Test case 1 : Create a booking with valid data and verify that the response status code is 200 and the response body contains the booking ID and the correct first name.
-    @Test(groups = {"regression"})
+    @Test(groups = {"smoke" , "regression"})
     @Story("Create a booking with valid data and verify response")
     @Description("Positive test case to create a booking with valid data and verify that the response status code is 200 and the response body contains the booking ID and the correct first name.")
     @Severity(SeverityLevel.CRITICAL)
@@ -43,7 +43,7 @@ public class CreateBookingTest extends BaseTest {
     }
 
     //Test case 2 : Create a booking and verify that the response body contains the same data as the request.
-    @Test(groups = {"regression"})
+    @Test(groups = {"smoke" , "regression"})
     @Story("Create a booking and verify response matches request")
     @Description("Positive test case to create a booking and verify that the response body contains the same data as the request.")
     @Severity(SeverityLevel.CRITICAL)
@@ -267,7 +267,7 @@ public class CreateBookingTest extends BaseTest {
     }
 
     //Test case 12 : create booking with extra field
-    @Test(groups = {"regression"})
+    @Test(groups = {"smoke","regression"})
     @Story("Create a booking with extra field and verify response")
     @Description("Positive test case to create a booking with extra field and verify that the response status code is 200 and the extra field is ignored.")
     @Severity(SeverityLevel.NORMAL)
@@ -306,7 +306,7 @@ public class CreateBookingTest extends BaseTest {
         }
 
     //Test case 14 : create a booking with additionalneeds as null
-    @Test(groups = {"regression"})
+    @Test(groups = {"smoke","regression"})
     @Story("Create a booking with additionalneeds as null and verify response")
     @Description("Positive test case to create a booking with additionalneeds as null and verify that the response status code is 200 and additionalneeds is set to null in the response.")
     @Severity(SeverityLevel.NORMAL)

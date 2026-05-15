@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Feature("Booking Management")
 public class GetAllBookingTest extends BaseTest {
     // Test Case 1 — Response status is 200
-    @Test(groups = {"regression" , "smoke"})
+    @Test(groups = {"smoke","regression"})
     @Story("Retrieve All Bookings")
     @Description("Positive Test: Verify that GET /booking returns 200 OK .")
     @Severity(SeverityLevel.CRITICAL)
