@@ -47,7 +47,7 @@ public class UpdateBookingTest extends BaseTest {
     // Test case 1 : valid token + all fields updated
     // ============================================================
 
-    @Test(groups = {"regression", "smoke"})
+    @Test(groups = {"smoke","regression"})
     @Story("Full Update Booking (PUT)")
     @Description("Positive Test: Verify that a full update with a valid token and all fields returns 200 OK.")
     @Severity(SeverityLevel.BLOCKER)

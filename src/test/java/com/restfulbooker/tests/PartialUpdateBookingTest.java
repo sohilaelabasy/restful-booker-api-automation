@@ -36,7 +36,7 @@ public class PartialUpdateBookingTest extends BaseTest {
     }
 
     //Test case 1 : update firstname only
-    @Test(groups = {"regression", "smoke"})
+    @Test(groups = { "smoke","regression"})
     @Story("Partial Update Booking (PATCH)")
     @Description("Positive Test: Verify that updating only the firstname returns 200 OK and reflects the change.")
     @Severity(SeverityLevel.CRITICAL)
@@ -85,7 +85,7 @@ public class PartialUpdateBookingTest extends BaseTest {
     }
 
     //Test case 4 : update multiple fields
-    @Test(groups = {"regression"})
+    @Test(groups = {"smoke","regression"})
     @Story("Partial Update Booking (PATCH)")
     @Description("Positive Test: Verify that updating multiple fields simultaneously returns 200 OK.")
     @Severity(SeverityLevel.CRITICAL)

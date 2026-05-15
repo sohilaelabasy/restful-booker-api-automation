@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Feature("Search and Filter")
 public class FilterBookingTest extends BaseTest {
 
-    @Test(groups = {"regression"})
+    @Test(groups = {"smoke","regression"})
     @Story("Filter bookings by first name")
     @Description("Positive test case : To Verify that the API returns bookings matching the provided firstname")
     @Severity(SeverityLevel.NORMAL)
@@ -24,7 +24,7 @@ public class FilterBookingTest extends BaseTest {
         assertThat(response.jsonPath().getList("$")).isNotEmpty();
     }
 
-    @Test(groups = {"regression"})
+    @Test(groups = {"smoke","regression"})
     @Story("Filter bookings by last name")
     @Description("Positive test case : To Verify that the API returns bookings matching the provided lastname")
     @Severity(SeverityLevel.NORMAL)
@@ -36,7 +36,7 @@ public class FilterBookingTest extends BaseTest {
         assertThat(response.jsonPath().getList("$")).isNotEmpty();
     }
 
-    @Test(groups = {"regression"})
+    @Test(groups = {"smoke","regression"})
     @Story("Filter bookings by check-in date")
     @Description("Positive test case : To Verify that the API returns bookings with check-in dates greater than or equal to the provided date")
     @Severity(SeverityLevel.NORMAL)
@@ -49,7 +49,7 @@ public class FilterBookingTest extends BaseTest {
         assertThat(response.jsonPath().getList("$")).isNotEmpty();
     }
 
-    @Test(groups = {"regression"})
+    @Test(groups = {"smoke","regression"})
     @Story("Filter bookings by check-out date")
     @Description("Positive test case : To Verify that the API returns bookings with check-out dates less than or equal to the provided date")
     @Severity(SeverityLevel.NORMAL)
@@ -62,7 +62,7 @@ public class FilterBookingTest extends BaseTest {
         assertThat(response.jsonPath().getList("$")).isNotEmpty();
     }
 
-    @Test(groups = {"regression"})
+    @Test(groups = {"smoke","regression"})
     @Story("Filter by check-in and check-out range")
     @Description("Positive test case : To Verify the logical consistency of results when filtering by a date range")
     @Severity(SeverityLevel.NORMAL)

@@ -16,7 +16,7 @@ public class HealthCheckTest extends BaseTest {
     @Story("Verify API Availability")
     @Description("Positive Test: Verify that GET /ping returns 201 Created, confirming the API is up and running.")
     @Severity(SeverityLevel.BLOCKER)
-    @Test(groups = {"regression" , "smoke"})
+    @Test(groups = {"smoke","regression"})
     public void testHealthCheckReturns201() {
         Response response =given(spec)
                 .when()

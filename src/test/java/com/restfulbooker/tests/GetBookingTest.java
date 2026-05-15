@@ -49,7 +49,7 @@ public class GetBookingTest extends BaseTest {
     // Test Case 1 — Valid ID returns 200
     // ============================================================
 
-    @Test(groups = {"regression", "smoke"})
+    @Test(groups = {"smoke","regression"})
     @Story("Retrieve booking by valid ID")
     @Description("Positive Test: Verify that GET /booking/{id} returns 200 OK for a valid existing ID.")
     @Severity(SeverityLevel.BLOCKER)
