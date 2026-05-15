@@ -4,159 +4,275 @@ import com.restfulbooker.base.BaseTest;
 import com.restfulbooker.models.BookingDates;
 import com.restfulbooker.models.BookingRequest;
 import com.restfulbooker.requests.BookingRequests;
+import io.qameta.allure.*;
 import io.restassured.response.Response;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 
+@Epic("Restful Booker API")
+@Feature("Booking Management")
 public class UpdateBookingTest extends BaseTest {
-    int bookingId;
-    @BeforeClass
-    public  void  createBooking(){
-        BookingRequests api = new BookingRequests(spec);
-        BookingDates bookingDates = new BookingDates("2025-07-01", "2025-07-10");
-        BookingRequest payload = new BookingRequest();
-        payload.setFirstname("Jim");
-        payload.setLastname("Brown");
-        payload.setTotalprice(111);
-        payload.setDepositpaid(true);
-        payload.setBookingdates(bookingDates);
-        payload.setAdditionalneeds("Breakfast");
+
+    // 🔹 Helper: create booking and return ID
+    @Step("Create a booking to be used in update tests")
+    private int createBooking() {
+        BookingRequests api = new BookingRequests(authSpec);
+
+        BookingRequest payload = BookingRequest.builder()
+                .firstname("Jim")
+                .lastname("Brown")
+                .totalprice(111)
+                .depositpaid(true)
+                .bookingdates(
+                        BookingDates.builder()
+                                .checkin("2025-07-01")
+                                .checkout("2025-07-10")
+                                .build()
+                )
+                .additionalneeds("Breakfast")
+                .build();
+
         Response response = api.createBooking(payload);
 
-        bookingId = response.jsonPath().getInt("bookingid");
-        System.out.println("Created booking with ID for PUT tests: " + bookingId);
+        assertThat(response.statusCode()).isEqualTo(200);
+
+        int id = response.jsonPath().getInt("bookingid");
+        assertThat(id).isGreaterThan(0);
+
+        return id;
     }
 
-    //Test case 1 : valid token + all fields updated
-    @Test
+    // ============================================================
+    // Test case 1 : valid token + all fields updated
+    // ============================================================
+
+    @Test(groups = {"regression", "smoke"})
+    @Story("Full Update Booking (PUT)")
+    @Description("Positive Test: Verify that a full update with a valid token and all fields returns 200 OK.")
+    @Severity(SeverityLevel.BLOCKER)
     public void testFullUpdateWithValidToken() {
-        BookingRequests api = new BookingRequests(spec);
-        BookingDates bookingDates = new BookingDates("2025-08-01", "2025-08-10");
-        BookingRequest payload = new BookingRequest();
-        payload.setFirstname("James");
-        payload.setLastname("Brown");
-        payload.setTotalprice(222);
-        payload.setDepositpaid(false);
-        payload.setBookingdates(bookingDates);
-        payload.setAdditionalneeds("Lunch");
+
+        BookingRequests api = new BookingRequests(authSpec);
+
+        int bookingId = createBooking();
+
+        BookingRequest payload = BookingRequest.builder()
+                .firstname("James")
+                .lastname("Brown")
+                .totalprice(222)
+                .depositpaid(false)
+                .bookingdates(
+                        BookingDates.builder()
+                                .checkin("2025-08-01")
+                                .checkout("2025-08-10")
+                                .build()
+                )
+                .additionalneeds("Lunch")
+                .build();
 
         Response response = api.updateBooking(bookingId, payload, token);
-        response.then().statusCode(200);
 
-        response.then().body("firstname", equalTo("James"));
-        response.then().body("lastname", equalTo("Brown"));
-        response.then().log().all().body("totalprice", equalTo(222));
-        response.then().log().all().body("depositpaid", equalTo(false));
-        response.then().log().all().body("bookingdates.checkin", equalTo("2025-08-01"));
-        response.then().log().all().body("bookingdates.checkout", equalTo("2025-08-10"));
-        response.then().log().all().body("additionalneeds", equalTo("Lunch"));
+        assertThat(response.statusCode()).isEqualTo(200);
 
+        var json = response.jsonPath();
+        assertThat(json.getString("firstname")).as("Check Firstname").isEqualTo("James");
+        assertThat(json.getString("lastname")).as("Check Lastname").isEqualTo("Brown");
+        assertThat(json.getInt("totalprice")).as("Check Total Price").isEqualTo(222);
+        assertThat(json.getBoolean("depositpaid")).as("Check Deposit Paid").isEqualTo(false);
+        assertThat(json.getString("bookingdates.checkin")).as("Check Check-in Date").isEqualTo("2025-08-01");
+        assertThat(json.getString("bookingdates.checkout")).as("Check Check-out Date").isEqualTo("2025-08-10");
+        assertThat(json.getString("additionalneeds")).as("Check Additional Needs").isEqualTo("Lunch");
     }
 
-    //Test case 2 : no token provided
-    @Test
+    // ============================================================
+    // Test case 2 : no token provided
+    // ============================================================
+
+    @Test(groups = {"regression"})
+    @Story("Full Update Booking (PUT)")
+    @Description("Negative Test: Verify that a full update fails (403) when no authentication token is provided.")
+    @Severity(SeverityLevel.CRITICAL)
     public void testFullUpdateWithoutToken() {
+
         BookingRequests api = new BookingRequests(spec);
-        BookingDates bookingDates = new BookingDates("2025-08-01", "2025-08-10");
-        BookingRequest payload = new BookingRequest();
-        payload.setFirstname("James");
-        payload.setLastname("Brown");
-        payload.setTotalprice(222);
-        payload.setDepositpaid(false);
-        payload.setBookingdates(bookingDates);
-        payload.setAdditionalneeds("Lunch");
+
+        int bookingId = createBooking();
+
+        BookingRequest payload = BookingRequest.builder()
+                .firstname("James")
+                .lastname("Brown")
+                .totalprice(222)
+                .depositpaid(false)
+                .bookingdates(
+                        BookingDates.builder()
+                                .checkin("2025-08-01")
+                                .checkout("2025-08-10")
+                                .build()
+                )
+                .additionalneeds("Lunch")
+                .build();
 
         Response response = api.updateBooking(bookingId, payload, null);
-        response.then().statusCode(403);
+
+        assertThat(response.statusCode()).isEqualTo(403);
     }
 
-    //Test case 3 : wrong token provided
-    @Test
+    // ============================================================
+    // Test case 3 : wrong token provided
+    // ============================================================
+
+    @Test(groups = {"regression"})
+    @Story("Full Update Booking (PUT)")
+    @Description("Negative Test: Verify that a full update fails (403) with an invalid authentication token.")
+    @Severity(SeverityLevel.CRITICAL)
     public void testFullUpdateWithWrongToken() {
+
         BookingRequests api = new BookingRequests(spec);
-        BookingDates bookingDates = new BookingDates("2025-08-01", "2025-08-10");
-        BookingRequest payload = new BookingRequest();
-        payload.setFirstname("James");
-        payload.setLastname("Brown");
-        payload.setTotalprice(222);
-        payload.setDepositpaid(false);
-        payload.setBookingdates(bookingDates);
-        payload.setAdditionalneeds("Lunch");
+
+        int bookingId = createBooking();
+
+        BookingRequest payload = BookingRequest.builder()
+                .firstname("James")
+                .lastname("Brown")
+                .totalprice(222)
+                .depositpaid(false)
+                .bookingdates(
+                        BookingDates.builder()
+                                .checkin("2025-08-01")
+                                .checkout("2025-08-10")
+                                .build()
+                )
+                .additionalneeds("Lunch")
+                .build();
 
         Response response = api.updateBooking(bookingId, payload, "invalidtoken123");
-        response.then().statusCode(403);
+
+        assertThat(response.statusCode()).isEqualTo(403);
     }
 
-    //Test case 4 : non-existent booking ID
-    @Test
+    // ============================================================
+    // Test case 4 : non-existent booking ID
+    // ============================================================
+
+    @Test(groups = {"regression"})
+    @Story("Full Update Booking (PUT)")
+    @Description("Negative Test: Verify that updating a non-existent booking ID returns 405 Method Not Allowed.")
+    @Severity(SeverityLevel.NORMAL)
     public void testFullUpdateWithNonExistentBookingId() {
-        BookingRequests api = new BookingRequests(spec);
-        BookingDates bookingDates = new BookingDates("2025-08-01", "2025-08-10");
-        BookingRequest payload = new BookingRequest();
-        payload.setFirstname("James");
-        payload.setLastname("Brown");
-        payload.setTotalprice(222);
-        payload.setDepositpaid(false);
-        payload.setBookingdates(bookingDates);
-        payload.setAdditionalneeds("Lunch");
 
-        int nonExistentBookingId = 99999; // Assuming this ID does not exist
+        BookingRequests api = new BookingRequests(authSpec);
+
+        BookingRequest payload = BookingRequest.builder()
+                .firstname("James")
+                .lastname("Brown")
+                .totalprice(222)
+                .depositpaid(false)
+                .bookingdates(
+                        BookingDates.builder()
+                                .checkin("2025-08-01")
+                                .checkout("2025-08-10")
+                                .build()
+                )
+                .additionalneeds("Lunch")
+                .build();
+
+        int nonExistentBookingId = 99999999;
+
         Response response = api.updateBooking(nonExistentBookingId, payload, token);
-        response.then().statusCode(405);
+
+        assertThat(response.statusCode()).isEqualTo(405);
     }
 
-    //Test case 5 : missing required field in the payload
-    @Test
+    // ============================================================
+    // Test case 5 : missing required field in the payload
+    // ============================================================
+
+    @Test(groups = {"regression"})
+    @Story("Full Update Booking (PUT)")
+    @Description("Negative Test: Verify that a full update with a missing required field returns 400 Bad Request.")
+    @Severity(SeverityLevel.NORMAL)
     public void testFullUpdateWithMissingRequiredField() {
-        BookingRequests api = new BookingRequests(spec);
-        BookingDates bookingDates = new BookingDates("2025-08-01", "2025-08-10");
-        BookingRequest payload = new BookingRequest();
-        // Missing firstname
+
+        BookingRequests api = new BookingRequests(authSpec);
+
+        int bookingId = createBooking();
+
+        BookingRequest payload = new BookingRequest(); // intentionally broken
         payload.setLastname("Brown");
         payload.setTotalprice(222);
         payload.setDepositpaid(false);
-        payload.setBookingdates(bookingDates);
+        payload.setBookingdates(new BookingDates("2025-08-01", "2025-08-10"));
         payload.setAdditionalneeds("Lunch");
 
         Response response = api.updateBooking(bookingId, payload, token);
-        response.then().statusCode(400);
-    }
 
-    //Test case 6 : negative total price
-    @Test
-    public void testFullUpdateWithNegativeTotalPrice() {
-        BookingRequests api = new BookingRequests(spec);
-        BookingDates bookingDates = new BookingDates("2025-08-01", "2025-08-10");
-        BookingRequest payload = new BookingRequest();
-        payload.setFirstname("James");
-        payload.setLastname("Brown");
-        payload.setTotalprice(-100); // Invalid negative price
-        payload.setDepositpaid(false);
-        payload.setBookingdates(bookingDates);
-        payload.setAdditionalneeds("Lunch");
-
-        Response response = api.updateBooking(bookingId, payload, token);
         assertThat(response.statusCode()).isEqualTo(400);
     }
 
-    //Test case 7 : checkout before checkin
-    @Test
-    public void testFullUpdateWithCheckoutBeforeCheckin() {
-        BookingRequests api = new BookingRequests(spec);
-        BookingDates bookingDates = new BookingDates("2025-08-10", "2025-08-01"); // Invalid dates
-        BookingRequest payload = new BookingRequest();
-        payload.setFirstname("James");
-        payload.setLastname("Brown");
-        payload.setTotalprice(222);
-        payload.setDepositpaid(false);
-        payload.setBookingdates(bookingDates);
-        payload.setAdditionalneeds("Lunch");
+    // ============================================================
+    // Test case 6 : negative total price
+    // ============================================================
+
+    @Test(groups = {"regression"})
+    @Story("Full Update Booking (PUT)")
+    @Description("Negative Test: Verify that a full update with a negative totalprice returns 400 Bad Request.")
+    @Severity(SeverityLevel.NORMAL)
+    public void testFullUpdateWithNegativeTotalPrice() {
+
+        BookingRequests api = new BookingRequests(authSpec);
+
+        int bookingId = createBooking();
+
+        BookingRequest payload = BookingRequest.builder()
+                .firstname("James")
+                .lastname("Brown")
+                .totalprice(-100)
+                .depositpaid(false)
+                .bookingdates(
+                        BookingDates.builder()
+                                .checkin("2025-08-01")
+                                .checkout("2025-08-10")
+                                .build()
+                )
+                .additionalneeds("Lunch")
+                .build();
 
         Response response = api.updateBooking(bookingId, payload, token);
+
+        assertThat(response.statusCode()).isEqualTo(400);
+    }
+
+    // ============================================================
+    // Test case 7 : checkout before checkin
+    // ============================================================
+
+    @Test(groups = {"regression"})
+    @Story("Full Update Booking (PUT)")
+    @Description("Negative Test: Verify that a full update with checkout before checkin returns 400 Bad Request.")
+    @Severity(SeverityLevel.NORMAL)
+    public void testFullUpdateWithCheckoutBeforeCheckin() {
+
+        BookingRequests api = new BookingRequests(authSpec);
+
+        int bookingId = createBooking();
+
+        BookingRequest payload = BookingRequest.builder()
+                .firstname("James")
+                .lastname("Brown")
+                .totalprice(222)
+                .depositpaid(false)
+                .bookingdates(
+                        BookingDates.builder()
+                                .checkin("2025-08-10")
+                                .checkout("2025-08-01")
+                                .build()
+                )
+                .additionalneeds("Lunch")
+                .build();
+
+        Response response = api.updateBooking(bookingId, payload, token);
+
         assertThat(response.statusCode()).isEqualTo(400);
     }
 }
-

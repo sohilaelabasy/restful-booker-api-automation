@@ -4,59 +4,89 @@ import com.restfulbooker.base.BaseTest;
 import com.restfulbooker.models.BookingDates;
 import com.restfulbooker.models.BookingRequest;
 import com.restfulbooker.requests.BookingRequests;
+import io.qameta.allure.*;
 import io.restassured.response.Response;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Epic("Restful Booker API")
+@Feature("Booking Management")
 public class GetBookingTest extends BaseTest {
 
-    private int bookingId;
-    private BookingRequest payload;
+    // 🔹 Helper: create booking + return (id + payload)
+    @Step("Create booking for GET tests")
+    private Object[] createBooking() {
 
+        BookingRequests api = new BookingRequests(authSpec);
 
-    @BeforeClass
-    public void createTestBooking(){
-        BookingRequests api = new BookingRequests(spec);
-        BookingDates bookingDates = new BookingDates("2025-01-01" , "2025-01-15");
-        payload = new BookingRequest();
-        payload.setFirstname("Jim");
-        payload.setLastname("Brown");
-        payload.setTotalprice(111);
-        payload.setDepositpaid(true);
-        payload.setBookingdates(bookingDates);
-        payload.setAdditionalneeds("Breakfast");
+        BookingRequest payload = BookingRequest.builder()
+                .firstname("Jim")
+                .lastname("Brown")
+                .totalprice(111)
+                .depositpaid(true)
+                .bookingdates(
+                        BookingDates.builder()
+                                .checkin("2025-01-01")
+                                .checkout("2025-01-15")
+                                .build()
+                )
+                .additionalneeds("Breakfast")
+                .build();
 
         Response response = api.createBooking(payload);
-        bookingId = response.jsonPath().getInt("bookingid");
+
+        assertThat(response.statusCode()).isEqualTo(200);
+
+        int id = response.jsonPath().getInt("bookingid");
+        assertThat(id).isGreaterThan(0);
+
+        return new Object[]{id, payload};
     }
 
-    // Test Case 1 — Valid ID returns 200 and correct data
-    @Test
-    public void testGetBookingByValidId(){
+    // ============================================================
+    // Test Case 1 — Valid ID returns 200
+    // ============================================================
+
+    @Test(groups = {"regression", "smoke"})
+    @Story("Retrieve booking by valid ID")
+    @Description("Positive Test: Verify that GET /booking/{id} returns 200 OK for a valid existing ID.")
+    @Severity(SeverityLevel.BLOCKER)
+    public void testGetBookingByValidId() {
+
         BookingRequests api = new BookingRequests(spec);
+
+        int bookingId = (int) createBooking()[0];
+
         Response response = api.getBooking(bookingId);
 
         assertThat(response.statusCode()).isEqualTo(200);
     }
 
-    //Test Case 2 — All fields  what was sent during creation
-    @Test
+    // ============================================================
+    // Test Case 2 — Data matches creation
+    // ============================================================
+
+    @Test(groups = {"regression"})
+    @Story("Retrieve booking by valid ID")
+    @Description("Positive Test: Verify that the retrieved booking data matches exactly what was sent during creation.")
+    @Severity(SeverityLevel.CRITICAL)
     public void testGetBookingDataMatchesCreation() {
+
         BookingRequests api = new BookingRequests(spec);
+
+        Object[] data = createBooking();
+        int bookingId = (int) data[0];
+        BookingRequest payload = (BookingRequest) data[1];
+
         Response response = api.getBooking(bookingId);
 
         assertThat(response.statusCode()).isEqualTo(200);
-        assertThat(response.jsonPath().getString("firstname"))
-                .isEqualTo(payload.getFirstname());
-        assertThat(response.jsonPath().getString("lastname"))
-                .isEqualTo(payload.getLastname());
-        assertThat(response.jsonPath().getInt("totalprice"))
-                .isEqualTo(payload.getTotalprice());
-        assertThat(response.jsonPath().getBoolean("depositpaid"))
-                .isEqualTo(payload.isDepositpaid());
+        assertThat(response.jsonPath().getString("firstname")).isEqualTo(payload.getFirstname());
+        assertThat(response.jsonPath().getString("lastname")).isEqualTo(payload.getLastname());
+        assertThat(response.jsonPath().getInt("totalprice")).isEqualTo(payload.getTotalprice());
+        assertThat(response.jsonPath().getBoolean("depositpaid")).isEqualTo(payload.isDepositpaid());
         assertThat(response.jsonPath().getString("bookingdates.checkin"))
                 .isEqualTo(payload.getBookingdates().getCheckin());
         assertThat(response.jsonPath().getString("bookingdates.checkout"))
@@ -65,69 +95,87 @@ public class GetBookingTest extends BaseTest {
                 .isEqualTo(payload.getAdditionalneeds());
     }
 
-    // Test Case 3 — non-existing ID returns 404
-    @Test
-    public void testGetBookingByNonExistingId(){
+    // ============================================================
+    // Test Case 3 — non-existing ID
+    // ============================================================
+
+    @Test(groups = {"regression"})
+    public void testGetBookingByNonExistingId() {
+
         BookingRequests api = new BookingRequests(spec);
-        int nonExistingId = 999999; // Assuming this ID does not exist
-        Response response = api.getBooking(nonExistingId);
+
+        Response response = api.getBooking(99999999);
+
         assertThat(response.statusCode()).isEqualTo(404);
     }
 
-    // Test Case 4 — String ID returns 404
-    @Test
+    // ============================================================
+    // Test Case 4 — String ID
+    // ============================================================
+
+    @Test(groups = {"regression"})
     public void testGetBookingByStringId() {
+
         Response response = given(spec)
                 .when().get("/booking/abc");
+
         assertThat(response.statusCode()).isEqualTo(404);
-        System.out.println("the actual status code is : "+response.statusCode());
     }
 
-    //Test Case 5 — Negative ID returns 404
-    @Test
+    // ============================================================
+    // Test Case 5 — Negative ID
+    // ============================================================
+
+    @Test(groups = {"regression"})
     public void testGetBookingByNegativeId() {
-        int negativeId = -1;
+
         Response response = given(spec)
-                .when().get("/booking/" + negativeId);
+                .when().get("/booking/-1");
+
         assertThat(response.statusCode()).isEqualTo(404);
     }
 
-    //Test Case 6 — ID = 0 : should return 404
-    @Test
+    // ============================================================
+    // Test Case 6 — Zero ID
+    // ============================================================
+
+    @Test(groups = {"regression"})
     public void testGetBookingByZeroId() {
-        int zeroId = 0;
+
         Response response = given(spec)
-                .when().get("/booking/" + zeroId);
+                .when().get("/booking/0");
+
         assertThat(response.statusCode()).isEqualTo(404);
     }
 
-    //Test Case 7 — Very large ID : observe overflow behaviour
-     @Test
+    // ============================================================
+    // Test Case 7 — Very large ID
+    // ============================================================
+
+    @Test(groups = {"regression"})
     public void testGetBookingByVeryLargeId() {
-        long veryLargeId = 9999999999L; // Assuming this ID does not exist
+
         Response response = given(spec)
-                .when().get("/booking/" + veryLargeId);
-        assertThat(response.statusCode()).isEqualTo(404);
-    }
-
-    //Test Case 8 — Get a deleted Booking Id must return 404
-    @Test
-    public void testGetBookingByDeletedBookingId(){
-        BookingRequests api = new BookingRequests(spec);
-        BookingRequest tempPayload = new BookingRequest();
-        tempPayload.setFirstname("Temp");
-        tempPayload.setLastname("User");
-        tempPayload.setTotalprice(50);
-        tempPayload.setDepositpaid(false);
-        tempPayload.setBookingdates(new BookingDates("2025-02-01", "2025-02-05"));
-        tempPayload.setAdditionalneeds("none");
-
-        Response createResponse = api.createBooking(tempPayload);
-        int tempBookingId = createResponse.jsonPath().getInt("bookingid");
-        api.deleteBooking(tempBookingId , token);
-        Response response = api.getBooking(tempBookingId);
+                .when().get("/booking/9999999999");
 
         assertThat(response.statusCode()).isEqualTo(404);
     }
 
+    // ============================================================
+    // Test Case 8 — Deleted booking
+    // ============================================================
+
+    @Test(groups = {"regression"})
+    public void testGetBookingByDeletedBookingId() {
+
+        BookingRequests api = new BookingRequests(authSpec);
+
+        int bookingId = (int) createBooking()[0];
+
+        api.deleteBooking(bookingId, token);
+
+        Response response = api.getBooking(bookingId);
+
+        assertThat(response.statusCode()).isEqualTo(404);
+    }
 }

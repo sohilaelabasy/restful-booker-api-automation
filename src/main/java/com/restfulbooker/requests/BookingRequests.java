@@ -1,8 +1,8 @@
 package com.restfulbooker.requests;
 import com.restfulbooker.models.BookingRequest;
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-
 
 import static io.restassured.RestAssured.given;
 
@@ -11,6 +11,11 @@ public class BookingRequests {
 
     public BookingRequests(RequestSpecification spec) {
         this.spec = spec;
+    }
+    public Response createBookingForSetup(BookingRequest payload){
+        return given(spec)
+                .body(payload)
+                .when().post("/booking");
     }
     public Response createBooking(BookingRequest payload){
         return given(spec)
@@ -43,5 +48,4 @@ public class BookingRequests {
                 .body(payload)
                 .when().patch("/booking/"+ id);
     }
-
 }

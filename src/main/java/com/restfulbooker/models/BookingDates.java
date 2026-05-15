@@ -1,29 +1,16 @@
 package com.restfulbooker.models;
 
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BookingDates {
-    private  String checkin ;
-    private  String checkout ;
 
-    public BookingDates() {
-    }
-    public BookingDates(String checkin, String checkout) {
-        this.checkin = checkin;
-        this.checkout = checkout;
-    }
-
-    public String getCheckout() {
-        return checkout;
-    }
-
-    public String getCheckin() {
-        return checkin;
-    }
-
-    public void setCheckin(String checkin) {
-        this.checkin = checkin;
-    }
-
-    public void setCheckout(String checkout) {
-        this.checkout = checkout;
-    }
+    private String checkin;
+    private String checkout;
 }
