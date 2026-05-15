@@ -6,15 +6,6 @@ import static io.restassured.RestAssured.given;
 
 public class TokenManager {
     public static String getToken(){
-       /* String body = """
-                {
-                    "username" : "%s",
-                    "password" : "%s"
-                }  """.formatted(
-                        ConfigReader.get("auth.username"),
-                ConfigReader.get("auth.password")
-        );*/
-
         Response response = given()
                 .baseUri(ConfigReader.get("base.url"))
                 .contentType("application/json")

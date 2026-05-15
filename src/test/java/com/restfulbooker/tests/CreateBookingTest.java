@@ -4,25 +4,34 @@ import com.restfulbooker.base.BaseTest;
 import com.restfulbooker.models.BookingDates;
 import com.restfulbooker.models.BookingRequest;
 import com.restfulbooker.requests.BookingRequests;
+import io.qameta.allure.*;
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
-
+@Epic("Restful Booker API")
+@Feature("Create Booking")
 public class CreateBookingTest extends BaseTest {
     //Test case 1 : Create a booking with valid data and verify that the response status code is 200 and the response body contains the booking ID and the correct first name.
-    @Test
+    @Test(groups = {"regression"})
+    @Story("Create a booking with valid data and verify response")
+    @Description("Positive test case to create a booking with valid data and verify that the response status code is 200 and the response body contains the booking ID and the correct first name.")
+    @Severity(SeverityLevel.CRITICAL)
     public void createBookingTestReturns200() {
         BookingRequests api = new BookingRequests(spec);
-        BookingDates bookingDates = new BookingDates("2025-07-01", "2025-07-10");
-        BookingRequest payload = new BookingRequest();
-        payload.setFirstname("Jim");
-        payload.setLastname("Brown");
-        payload.setTotalprice(111);
-        payload.setDepositpaid(true);
-        payload.setBookingdates(bookingDates);
-        payload.setAdditionalneeds("Breakfast");
+        BookingDates bookingDates = BookingDates.builder()
+                .checkin("2025-07-01")
+                .checkout("2025-07-10")
+                .build();
+        BookingRequest payload = BookingRequest.builder()
+                .firstname("Jim")
+                .lastname("Brown")
+                .totalprice(111)
+                .depositpaid(true)
+                .bookingdates(bookingDates)
+                .additionalneeds("Breakfast")
+                .build();
         String firstName = payload.getFirstname();
         Response response = api.createBooking(payload);
 
@@ -34,7 +43,10 @@ public class CreateBookingTest extends BaseTest {
     }
 
     //Test case 2 : Create a booking and verify that the response body contains the same data as the request.
-    @Test
+    @Test(groups = {"regression"})
+    @Story("Create a booking and verify response matches request")
+    @Description("Positive test case to create a booking and verify that the response body contains the same data as the request.")
+    @Severity(SeverityLevel.CRITICAL)
     public void createBookingResponseMatchesRequest() {
         BookingRequests api = new BookingRequests(spec);
         BookingRequest payload = new BookingRequest();
@@ -60,7 +72,10 @@ public class CreateBookingTest extends BaseTest {
     }
 
     //Test case 3 : Create a booking with missing required field (e.g., missing firstname).
-    @Test
+    @Test(groups = {"regression"})
+    @Story("Create a booking with missing required field and verify response")
+    @Description("Negative test case to create a booking with missing required field (e.g., missing firstname) and verify that the response status code is 400.")
+    @Severity(SeverityLevel.NORMAL)
     public void testCreateBookingMissingFirstName() {
         Response response = given(spec)
                 .body("""
@@ -79,7 +94,10 @@ public class CreateBookingTest extends BaseTest {
     }
 
     //Test case 4 : Create a booking with missing booking dates.
-    @Test
+    @Story("Create a booking with missing booking dates and verify response")
+    @Description("Negative test case to create a booking with missing booking dates and verify that the response status code is 400.")
+    @Severity(SeverityLevel.NORMAL)
+    @Test(groups = {"regression"})
     public void testCreateBookingMissingBookingDates() {
         Response response = given(spec)
                 .body("""
@@ -95,7 +113,10 @@ public class CreateBookingTest extends BaseTest {
     }
 
     //Test case 5 : Create a booking with totalprice as String.
-    @Test
+    @Test(groups = {"regression"})
+    @Story("Create a booking with totalprice as String and verify response")
+    @Description("Negative test case to create a booking with totalprice as String and verify that the response status code is 400.")
+    @Severity(SeverityLevel.NORMAL)
     public void testCreateBookingTotalPriceAsString() {
         Response response = given(spec)
                 .body("""
@@ -117,7 +138,10 @@ public class CreateBookingTest extends BaseTest {
     }
 
     //Test case 6 : create a booking with negative totalprice.
-    @Test
+    @Test(groups = {"regression"})
+    @Story("Create a booking with negative totalprice and verify response")
+    @Description("Negative test case to create a booking with negative totalprice and verify that the response status code is 400.")
+    @Severity(SeverityLevel.NORMAL)
     public void testCreateBookingNegativeTotalPrice() {
         BookingRequests api = new BookingRequests(spec);
         BookingRequest payload = new BookingRequest();
@@ -135,7 +159,10 @@ public class CreateBookingTest extends BaseTest {
     }
 
     //Test case 7 : create a booking with checkout date before checkin date.
-    @Test
+    @Test(groups = {"regression"})
+    @Story("Create a booking with checkout date before checkin date and verify response")
+    @Description("Negative test case to create a booking with checkout date before checkin date and verify that the response status code is 400.")
+    @Severity(SeverityLevel.NORMAL)
     public void testCreateBookingCheckoutBeforeCheckin() {
         BookingRequests api = new BookingRequests(spec);
         BookingRequest payload = new BookingRequest();
@@ -147,12 +174,14 @@ public class CreateBookingTest extends BaseTest {
 
         Response response = api.createBooking(payload);
 
-        System.out.println("Checkout before checkin status: " + response.statusCode());
-        System.out.println("Checkout before checkin body: " + response.asString());
         assertThat(response.statusCode()).isEqualTo(400);
     }
+
     //Test case 8 : create a booking with checkin = checkout date.
-    @Test
+    @Test(groups = {"regression"})
+    @Story("Create a booking with checkin date equal to checkout date and verify response")
+    @Description("Negative test case to create a booking with checkin date equal to checkout date and verify that the response status code is 400.")
+    @Severity(SeverityLevel.NORMAL)
     public void testCheckinEqualsCheckout(){
         BookingRequests api = new BookingRequests(spec);
         BookingRequest payload = new BookingRequest();
@@ -164,14 +193,14 @@ public class CreateBookingTest extends BaseTest {
 
         Response response = api.createBooking(payload);
 
-
-        System.out.println("Checkin equals checkout status: " + response.statusCode());
-        System.out.println("Checkin equals checkout body: " + response.asString());
         assertThat(response.statusCode()).isEqualTo(400);
     }
 
     //Test case 9 : create a booking with invalid checkin format.
-    @Test
+    @Test(groups = {"regression"})
+    @Story("Create a booking with Invalid checkin format and verify response")
+    @Description("Negative test case to create a booking with invalid checkin format and verify that the response status code is 400.")
+    @Severity(SeverityLevel.NORMAL)
     public void testCreateBookingInvalidCheckinFormat() {
         Response response = given(spec)
                 .body("""
@@ -187,13 +216,14 @@ public class CreateBookingTest extends BaseTest {
                             "additionalneeds" : "Breakfast"
                         }""")
                 .when().post("/booking");
-        System.out.println("Invalid checkin format status: " + response.statusCode());
-        System.out.println("Invalid checkin format body: " + response.asString());
         assertThat(response.statusCode()).isEqualTo(400);
     }
 
     //Test case 10 : create a booking with depositpaid as String.
-    @Test
+    @Test(groups = {"regression"})
+    @Story("Create a booking with depositpaid as String and verify response")
+    @Description("Negative test case to create a booking with depositpaid as String and verify that the response status code is 400.")
+    @Severity(SeverityLevel.NORMAL)
     public void testCreateBookingDepositPaidAsString(){
         Response response = given(spec)
                 .body("""
@@ -209,8 +239,6 @@ public class CreateBookingTest extends BaseTest {
                             "additionalneeds" : "Breakfast"
                         }""")
                 .when().post("/booking");
-        System.out.println("Depositpaid as string status: " + response.statusCode());
-        System.out.println("Depositpaid as string body: " + response.asString());
         assertThat(response.statusCode())
                 .as("API must reject string depositpaid — if 200, this is a BUG")
                 .isEqualTo(400);
@@ -218,7 +246,10 @@ public class CreateBookingTest extends BaseTest {
     }
 
     //Test case 11 : create a booking with empty first name
-    @Test
+    @Test(groups = {"regression"})
+    @Story("Create a booking with empty first name and verify response")
+    @Description("Negative test case to create a booking with empty first name and verify that the response status code is 400.")
+    @Severity(SeverityLevel.NORMAL)
     public void testCreateBookingWithEmptyFirstName(){
         BookingRequests api = new BookingRequests(spec);
         BookingDates bookingDates = new BookingDates("2025-07-01", "2025-07-10");
@@ -236,7 +267,10 @@ public class CreateBookingTest extends BaseTest {
     }
 
     //Test case 12 : create booking with extra field
-    @Test
+    @Test(groups = {"regression"})
+    @Story("Create a booking with extra field and verify response")
+    @Description("Positive test case to create a booking with extra field and verify that the response status code is 200 and the extra field is ignored.")
+    @Severity(SeverityLevel.NORMAL)
     public void testCreateBookingWithExtraField(){
         Response response = given(spec)
                 .body("""
@@ -253,13 +287,14 @@ public class CreateBookingTest extends BaseTest {
                             "extrafield": "This should be ignored"
                         }""")
                 .when().post("/booking");
-        System.out.println("Create booking with extra field status: " + response.statusCode());
-        System.out.println("Create booking with extra field body: " + response.asString());
         assertThat(response.statusCode()).isEqualTo(200);
     }
 
    //Test case 13 : create a booking with Empty body
-    @Test
+    @Test(groups = {"regression"})
+    @Story("Create a booking with empty body and verify response")
+    @Description("Negative test case to create a booking with empty body and verify that the response status code is 400.")
+    @Severity(SeverityLevel.NORMAL)
     public void testEmptyBodyShouldReject() {
             Response response = given(spec)
                     .body("{}")
@@ -271,7 +306,10 @@ public class CreateBookingTest extends BaseTest {
         }
 
     //Test case 14 : create a booking with additionalneeds as null
-    @Test
+    @Test(groups = {"regression"})
+    @Story("Create a booking with additionalneeds as null and verify response")
+    @Description("Positive test case to create a booking with additionalneeds as null and verify that the response status code is 200 and additionalneeds is set to null in the response.")
+    @Severity(SeverityLevel.NORMAL)
     public void testAdditionalNeedsAsNullObserveBehavior() {
         Response response = given(spec)
                 .body("{ \"firstname\": \"Jim\"," +
