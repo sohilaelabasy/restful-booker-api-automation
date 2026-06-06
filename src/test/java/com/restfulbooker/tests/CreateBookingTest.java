@@ -72,7 +72,7 @@ public class CreateBookingTest extends BaseTest {
     }
 
     //Test case 3 : Create a booking with missing required field (e.g., missing firstname).
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Create a booking with missing required field and verify response")
     @Description("Negative test case to create a booking with missing required field (e.g., missing firstname) and verify that the response status code is 400.")
     @Severity(SeverityLevel.NORMAL)
@@ -97,7 +97,7 @@ public class CreateBookingTest extends BaseTest {
     @Story("Create a booking with missing booking dates and verify response")
     @Description("Negative test case to create a booking with missing booking dates and verify that the response status code is 400.")
     @Severity(SeverityLevel.NORMAL)
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     public void testCreateBookingMissingBookingDates() {
         Response response = given(spec)
                 .body("""
@@ -113,7 +113,7 @@ public class CreateBookingTest extends BaseTest {
     }
 
     //Test case 5 : Create a booking with totalprice as String.
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Create a booking with totalprice as String and verify response")
     @Description("Negative test case to create a booking with totalprice as String and verify that the response status code is 400.")
     @Severity(SeverityLevel.NORMAL)
@@ -138,7 +138,7 @@ public class CreateBookingTest extends BaseTest {
     }
 
     //Test case 6 : create a booking with negative totalprice.
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Create a booking with negative totalprice and verify response")
     @Description("Negative test case to create a booking with negative totalprice and verify that the response status code is 400.")
     @Severity(SeverityLevel.NORMAL)
@@ -159,7 +159,7 @@ public class CreateBookingTest extends BaseTest {
     }
 
     //Test case 7 : create a booking with checkout date before checkin date.
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Create a booking with checkout date before checkin date and verify response")
     @Description("Negative test case to create a booking with checkout date before checkin date and verify that the response status code is 400.")
     @Severity(SeverityLevel.NORMAL)
@@ -178,7 +178,7 @@ public class CreateBookingTest extends BaseTest {
     }
 
     //Test case 8 : create a booking with checkin = checkout date.
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Create a booking with checkin date equal to checkout date and verify response")
     @Description("Negative test case to create a booking with checkin date equal to checkout date and verify that the response status code is 400.")
     @Severity(SeverityLevel.NORMAL)
@@ -197,7 +197,7 @@ public class CreateBookingTest extends BaseTest {
     }
 
     //Test case 9 : create a booking with invalid checkin format.
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Create a booking with Invalid checkin format and verify response")
     @Description("Negative test case to create a booking with invalid checkin format and verify that the response status code is 400.")
     @Severity(SeverityLevel.NORMAL)
@@ -220,7 +220,7 @@ public class CreateBookingTest extends BaseTest {
     }
 
     //Test case 10 : create a booking with depositpaid as String.
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Create a booking with depositpaid as String and verify response")
     @Description("Negative test case to create a booking with depositpaid as String and verify that the response status code is 400.")
     @Severity(SeverityLevel.NORMAL)
@@ -246,7 +246,7 @@ public class CreateBookingTest extends BaseTest {
     }
 
     //Test case 11 : create a booking with empty first name
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Create a booking with empty first name and verify response")
     @Description("Negative test case to create a booking with empty first name and verify that the response status code is 400.")
     @Severity(SeverityLevel.NORMAL)
@@ -291,7 +291,7 @@ public class CreateBookingTest extends BaseTest {
     }
 
    //Test case 13 : create a booking with Empty body
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Create a booking with empty body and verify response")
     @Description("Negative test case to create a booking with empty body and verify that the response status code is 400.")
     @Severity(SeverityLevel.NORMAL)
@@ -323,6 +323,4 @@ public class CreateBookingTest extends BaseTest {
                 .as("API should handle null additionalneeds gracefully")
                 .isEqualTo(200);
     }
-
 }
-

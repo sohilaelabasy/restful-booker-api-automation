@@ -50,7 +50,7 @@ public class AuthTests extends BaseTest {
     @Story("Verify wrong username returns Bad credentials")
     @Description("Negative test case to verify that POST /auth with wrong username returns status 200 but reason 'Bad credentials'")
     @Severity(SeverityLevel.CRITICAL)
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     public void testWrongUsernameReturnsBadCredentials() {
 
         Response response = given(spec)
@@ -68,7 +68,7 @@ public class AuthTests extends BaseTest {
     @Story("Verify wrong password returns Bad credentials")
     @Description("Negative test case to verify that POST /auth with wrong password returns status 200 but reason 'Bad credentials'")
     @Severity(SeverityLevel.CRITICAL)
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     public void testWrongPasswordReturnsBadCredentials() {
 
         Response response = given(spec)
@@ -86,7 +86,7 @@ public class AuthTests extends BaseTest {
     @Story("Verify empty username returns Bad credentials")
     @Description("Negative test case to verify that POST /auth with empty username returns status 200 but reason 'Bad credentials'")
     @Severity(SeverityLevel.CRITICAL)
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     public void testEmptyUsernameReturnsBadCredentials() {
 
         Response response = given(spec)
@@ -101,7 +101,7 @@ public class AuthTests extends BaseTest {
     }
 
     // Test Case 6 — Empty Body
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Verify empty body does not return token")
     @Description("Negative test case to verify that POST /auth with empty body returns status 200 but does not return a token")
     @Severity(SeverityLevel.CRITICAL)
@@ -119,7 +119,7 @@ public class AuthTests extends BaseTest {
     }
 
     // Test Case 7 — SQL injection in username
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Security: SQL Injection Defense")
     @Description("Negative test case to verify that POST /auth with SQL injection in username does not bypass authentication and returns 'Bad credentials'")
     @Severity(SeverityLevel.CRITICAL)
@@ -138,7 +138,7 @@ public class AuthTests extends BaseTest {
     }
 
     // Test Case 8 — Very long username
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Boundary Testing: Large Input Handling")
     @Description("Negative test case to verify that POST /auth with a very long username does not cause server error and returns 'Bad credentials'")
     @Severity(SeverityLevel.CRITICAL)
@@ -157,7 +157,7 @@ public class AuthTests extends BaseTest {
     }
 
     // Test Case 9 — Special characters in password
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Input Validation: Special Characters")
     @Description("Negative test case to verify that POST /auth with special characters in password does not bypass authentication and returns 'Bad credentials'")
     @Severity(SeverityLevel.CRITICAL)
@@ -176,7 +176,7 @@ public class AuthTests extends BaseTest {
     }
 
     // Test Case 10 — No Content-Type header
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Verify no Content-Type header does not cause server error")
     @Description("Negative test case to verify that POST /auth without Content-Type header does not cause server error and returns 'Bad credentials'")
     @Severity(SeverityLevel.CRITICAL)
@@ -192,7 +192,7 @@ public class AuthTests extends BaseTest {
     }
 
     // Test Case 11 — Username as integer
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Verify username as integer does not cause server error and returns 'Bad credentials'")
     @Description("Negative test case to verify that POST /auth with username as integer does not cause server error and returns 'Bad credentials'")
     @Severity(SeverityLevel.CRITICAL)

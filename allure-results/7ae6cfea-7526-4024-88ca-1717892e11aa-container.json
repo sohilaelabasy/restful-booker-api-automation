@@ -1,0 +1,1 @@
+{"uuid":"7ae6cfea-7526-4024-88ca-1717892e11aa","name":"RestfulBooker Smoke Suite","children":["0e77fbaa-333e-404b-8971-e187784ff9ed"],"befores":[{"name":"globalSetUp","status":"passed","stage":"finished","description":"","steps":[],"attachments":[],"parameters":[],"start":1780749942721,"stop":1780749945791}],"afters":[],"start":1780749942695,"stop":1780749961922}

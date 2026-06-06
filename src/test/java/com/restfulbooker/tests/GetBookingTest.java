@@ -15,7 +15,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Feature("Booking Management")
 public class GetBookingTest extends BaseTest {
 
-    // 🔹 Helper: create booking + return (id + payload)
     @Step("Create booking for GET tests")
     private Object[] createBooking() {
 
@@ -45,11 +44,8 @@ public class GetBookingTest extends BaseTest {
         return new Object[]{id, payload};
     }
 
-    // ============================================================
-    // Test Case 1 — Valid ID returns 200
-    // ============================================================
-
-    @Test(groups = {"smoke","regression"})
+    // Test Case 1 - Get booking by valid ID
+    @Test(groups = {"smoke", "regression"})
     @Story("Retrieve booking by valid ID")
     @Description("Positive Test: Verify that GET /booking/{id} returns 200 OK for a valid existing ID.")
     @Severity(SeverityLevel.BLOCKER)
@@ -64,10 +60,7 @@ public class GetBookingTest extends BaseTest {
         assertThat(response.statusCode()).isEqualTo(200);
     }
 
-    // ============================================================
-    // Test Case 2 — Data matches creation
-    // ============================================================
-
+    // Test Case 2 - Verify retrieved data matches created booking
     @Test(groups = {"regression"})
     @Story("Retrieve booking by valid ID")
     @Description("Positive Test: Verify that the retrieved booking data matches exactly what was sent during creation.")
@@ -95,11 +88,8 @@ public class GetBookingTest extends BaseTest {
                 .isEqualTo(payload.getAdditionalneeds());
     }
 
-    // ============================================================
-    // Test Case 3 — non-existing ID
-    // ============================================================
-
-    @Test(groups = {"regression"})
+    // Test Case 3 - Get booking with non-existing ID
+    @Test(groups = {"negative"})
     public void testGetBookingByNonExistingId() {
 
         BookingRequests api = new BookingRequests(spec);
@@ -109,11 +99,8 @@ public class GetBookingTest extends BaseTest {
         assertThat(response.statusCode()).isEqualTo(404);
     }
 
-    // ============================================================
-    // Test Case 4 — String ID
-    // ============================================================
-
-    @Test(groups = {"regression"})
+    // Test Case 4 - Get booking with string ID
+    @Test(groups = {"negative"})
     public void testGetBookingByStringId() {
 
         Response response = given(spec)
@@ -122,11 +109,8 @@ public class GetBookingTest extends BaseTest {
         assertThat(response.statusCode()).isEqualTo(404);
     }
 
-    // ============================================================
-    // Test Case 5 — Negative ID
-    // ============================================================
-
-    @Test(groups = {"regression"})
+    // Test Case 5 - Get booking with negative ID
+    @Test(groups = {"negative"})
     public void testGetBookingByNegativeId() {
 
         Response response = given(spec)
@@ -135,11 +119,8 @@ public class GetBookingTest extends BaseTest {
         assertThat(response.statusCode()).isEqualTo(404);
     }
 
-    // ============================================================
-    // Test Case 6 — Zero ID
-    // ============================================================
-
-    @Test(groups = {"regression"})
+    // Test Case 6 - Get booking with zero ID
+    @Test(groups = {"negative"})
     public void testGetBookingByZeroId() {
 
         Response response = given(spec)
@@ -148,11 +129,8 @@ public class GetBookingTest extends BaseTest {
         assertThat(response.statusCode()).isEqualTo(404);
     }
 
-    // ============================================================
-    // Test Case 7 — Very large ID
-    // ============================================================
-
-    @Test(groups = {"regression"})
+    // Test Case 7 - Get booking with very large ID
+    @Test(groups = {"negative"})
     public void testGetBookingByVeryLargeId() {
 
         Response response = given(spec)
@@ -161,11 +139,8 @@ public class GetBookingTest extends BaseTest {
         assertThat(response.statusCode()).isEqualTo(404);
     }
 
-    // ============================================================
-    // Test Case 8 — Deleted booking
-    // ============================================================
-
-    @Test(groups = {"regression"})
+    // Test Case 8 - Get deleted booking
+    @Test(groups = {"negative"})
     public void testGetBookingByDeletedBookingId() {
 
         BookingRequests api = new BookingRequests(authSpec);

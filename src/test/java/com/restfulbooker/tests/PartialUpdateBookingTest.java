@@ -105,7 +105,7 @@ public class PartialUpdateBookingTest extends BaseTest {
     }
 
     //Test case 5 : update with no token
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Partial Update Booking (PATCH)")
     @Description("Negative Test: Verify that partial update fails (403) without an authentication token.")
     @Severity(SeverityLevel.CRITICAL)
@@ -120,7 +120,7 @@ public class PartialUpdateBookingTest extends BaseTest {
     }
 
     //Test case 6 : update with invalid token
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Partial Update Booking (PATCH)")
     @Description("Negative Test: Verify that partial update fails (403) with an invalid token.")
     @Severity(SeverityLevel.CRITICAL)
@@ -135,7 +135,7 @@ public class PartialUpdateBookingTest extends BaseTest {
     }
 
     //Test case 7 : update with empty body
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Partial Update Booking (PATCH)")
     @Description("Negative Test: Verify that an empty body returns 400 Bad Request.")
     @Severity(SeverityLevel.NORMAL)
@@ -151,7 +151,7 @@ public class PartialUpdateBookingTest extends BaseTest {
     }
 
     //Test case 8 : update with negative total price
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Partial Update Booking (PATCH)")
     @Description("Negative Test: Verify that negative totalprice returns 400 Bad Request.")
     @Severity(SeverityLevel.NORMAL)
@@ -166,7 +166,7 @@ public class PartialUpdateBookingTest extends BaseTest {
     }
 
     //Test case 9 : update with null firstname
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Partial Update Booking (PATCH)")
     @Description("Negative Test: Verify that null firstname returns 400 Bad Request.")
     @Severity(SeverityLevel.NORMAL)
@@ -181,7 +181,7 @@ public class PartialUpdateBookingTest extends BaseTest {
     }
 
     //Test case 10 : update with unknown field
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Partial Update Booking (PATCH)")
     @Description("Negative Test: Verify that an unknown field results in a 404 or ignore behavior (based on API design).")
     @Severity(SeverityLevel.NORMAL)
