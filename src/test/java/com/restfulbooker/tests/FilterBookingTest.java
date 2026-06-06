@@ -4,7 +4,9 @@ import com.restfulbooker.base.BaseTest;
 import io.qameta.allure.*;
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
+
 import java.util.List;
+
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,7 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Feature("Search and Filter")
 public class FilterBookingTest extends BaseTest {
 
-    @Test(groups = {"smoke","regression"})
+    // Test Case 1 - Filter bookings by first name
+    @Test(groups = {"smoke", "regression"})
     @Story("Filter bookings by first name")
     @Description("Positive test case : To Verify that the API returns bookings matching the provided firstname")
     @Severity(SeverityLevel.NORMAL)
@@ -20,11 +23,13 @@ public class FilterBookingTest extends BaseTest {
         Response response = given(spec)
                 .queryParam("firstname", "Jim")
                 .when().get("/booking");
+
         assertThat(response.statusCode()).isEqualTo(200);
         assertThat(response.jsonPath().getList("$")).isNotEmpty();
     }
 
-    @Test(groups = {"smoke","regression"})
+    // Test Case 2 - Filter bookings by last name
+    @Test(groups = {"smoke", "regression"})
     @Story("Filter bookings by last name")
     @Description("Positive test case : To Verify that the API returns bookings matching the provided lastname")
     @Severity(SeverityLevel.NORMAL)
@@ -32,37 +37,45 @@ public class FilterBookingTest extends BaseTest {
         Response response = given(spec)
                 .queryParam("lastname", "Brown")
                 .when().get("/booking");
+
         assertThat(response.statusCode()).isEqualTo(200);
         assertThat(response.jsonPath().getList("$")).isNotEmpty();
     }
 
-    @Test(groups = {"smoke","regression"})
+    // Test Case 3 - Filter bookings by check-in date
+    @Test(groups = {"smoke", "regression"})
     @Story("Filter bookings by check-in date")
     @Description("Positive test case : To Verify that the API returns bookings with check-in dates greater than or equal to the provided date")
     @Severity(SeverityLevel.NORMAL)
     public void testFilterByCheckinDate() {
         String filterDate = "2025-07-01";
+
         Response response = given(spec)
                 .queryParam("checkin", filterDate)
                 .when().get("/booking");
+
         assertThat(response.statusCode()).isEqualTo(200);
         assertThat(response.jsonPath().getList("$")).isNotEmpty();
     }
 
-    @Test(groups = {"smoke","regression"})
+    // Test Case 4 - Filter bookings by check-out date
+    @Test(groups = {"smoke", "regression"})
     @Story("Filter bookings by check-out date")
     @Description("Positive test case : To Verify that the API returns bookings with check-out dates less than or equal to the provided date")
     @Severity(SeverityLevel.NORMAL)
     public void testFilterByCheckout() {
         String filterDate = "2024-01-01";
+
         Response response = given(spec)
                 .queryParam("checkout", filterDate)
                 .when().get("/booking");
+
         assertThat(response.statusCode()).isEqualTo(200);
         assertThat(response.jsonPath().getList("$")).isNotEmpty();
     }
 
-    @Test(groups = {"smoke","regression"})
+    // Test Case 5 - Filter by check-in and check-out range
+    @Test(groups = {"smoke", "regression"})
     @Story("Filter by check-in and check-out range")
     @Description("Positive test case : To Verify the logical consistency of results when filtering by a date range")
     @Severity(SeverityLevel.NORMAL)
@@ -76,9 +89,11 @@ public class FilterBookingTest extends BaseTest {
                 .when().get("/booking");
 
         List<Integer> ids = response.jsonPath().getList("bookingid");
+
         assertThat(response.statusCode()).isEqualTo(200);
 
         for (Integer id : ids) {
+
             Response booking = given(spec)
                     .pathParam("id", id)
                     .when().get("/booking/{id}");
@@ -91,19 +106,22 @@ public class FilterBookingTest extends BaseTest {
         }
     }
 
-    @Test(groups = {"regression"})
+    // Test Case 6 - Filter with no matching results
+    @Test(groups = {"negative"})
     @Story("Filter with no matching results")
-    @Description("Negative test case : ToVerify that an empty list is returned when no bookings match the filter criteria")
+    @Description("Negative test case : To Verify that an empty list is returned when no bookings match the filter criteria")
     @Severity(SeverityLevel.MINOR)
     public void testFilterWithNoMatchingResults() {
         Response response = given(spec)
                 .queryParam("firstname", "ggsgghaajjwjw")
                 .when().get("/booking");
+
         assertThat(response.statusCode()).isEqualTo(200);
         assertThat(response.jsonPath().getList("$")).isEmpty();
     }
 
-    @Test(groups = {"regression"})
+    // Test Case 7 - Filter with invalid date format
+    @Test(groups = {"negative"})
     @Story("Filter with invalid date format")
     @Description("Negative test case: Verify API returns 400 when an invalid date format is used in filters")
     @Severity(SeverityLevel.NORMAL)
@@ -111,10 +129,12 @@ public class FilterBookingTest extends BaseTest {
         Response response = given(spec)
                 .queryParam("checkin", "not-a-date")
                 .when().get("/booking");
+
         assertThat(response.statusCode()).isEqualTo(400);
     }
 
-    @Test(groups = {"regression"})
+    // Test Case 8 - SQL injection in filter parameter
+    @Test(groups = {"negative"})
     @Story("Security: SQL Injection Defense")
     @Description("Negative test case : To Verify that SQL injection patterns in query parameters are handled safely")
     @Severity(SeverityLevel.CRITICAL)
@@ -122,10 +142,12 @@ public class FilterBookingTest extends BaseTest {
         Response response = given(spec)
                 .queryParam("firstname", "Jim' OR '1' = '1'")
                 .when().get("/booking");
+
         assertThat(response.statusCode()).isIn(400, 200);
     }
 
-    @Test(groups = {"regression"})
+    // Test Case 9 - Very long filter value
+    @Test(groups = {"negative"})
     @Story("Boundary Testing: Large Filter Value")
     @Description("Verify that very long string values in query parameters do not crash the server")
     @Severity(SeverityLevel.NORMAL)
@@ -133,6 +155,7 @@ public class FilterBookingTest extends BaseTest {
         Response response = given(spec)
                 .queryParam("firstname", "A".repeat(500))
                 .when().get("/booking");
+
         assertThat(response.statusCode()).isNotEqualTo(500);
     }
 }

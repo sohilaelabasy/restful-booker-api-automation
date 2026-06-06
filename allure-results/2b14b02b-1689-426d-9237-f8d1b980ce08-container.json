@@ -1,0 +1,1 @@
+{"uuid":"2b14b02b-1689-426d-9237-f8d1b980ce08","name":"com.restfulbooker.tests.DeleteBookingTest","children":["1065c15e-5224-4887-971e-a3108b7a5917"],"befores":[{"name":"setUp","status":"passed","stage":"finished","description":"","steps":[],"attachments":[],"parameters":[],"start":1780749960197,"stop":1780749960200}],"afters":[],"start":1780749945796,"stop":1780749961890}

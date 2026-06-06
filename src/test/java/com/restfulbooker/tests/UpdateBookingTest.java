@@ -89,7 +89,7 @@ public class UpdateBookingTest extends BaseTest {
     // Test case 2 : no token provided
     // ============================================================
 
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Full Update Booking (PUT)")
     @Description("Negative Test: Verify that a full update fails (403) when no authentication token is provided.")
     @Severity(SeverityLevel.CRITICAL)
@@ -122,7 +122,7 @@ public class UpdateBookingTest extends BaseTest {
     // Test case 3 : wrong token provided
     // ============================================================
 
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Full Update Booking (PUT)")
     @Description("Negative Test: Verify that a full update fails (403) with an invalid authentication token.")
     @Severity(SeverityLevel.CRITICAL)
@@ -155,7 +155,7 @@ public class UpdateBookingTest extends BaseTest {
     // Test case 4 : non-existent booking ID
     // ============================================================
 
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Full Update Booking (PUT)")
     @Description("Negative Test: Verify that updating a non-existent booking ID returns 405 Method Not Allowed.")
     @Severity(SeverityLevel.NORMAL)
@@ -188,7 +188,7 @@ public class UpdateBookingTest extends BaseTest {
     // Test case 5 : missing required field in the payload
     // ============================================================
 
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Full Update Booking (PUT)")
     @Description("Negative Test: Verify that a full update with a missing required field returns 400 Bad Request.")
     @Severity(SeverityLevel.NORMAL)
@@ -214,7 +214,7 @@ public class UpdateBookingTest extends BaseTest {
     // Test case 6 : negative total price
     // ============================================================
 
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Full Update Booking (PUT)")
     @Description("Negative Test: Verify that a full update with a negative totalprice returns 400 Bad Request.")
     @Severity(SeverityLevel.NORMAL)
@@ -247,7 +247,7 @@ public class UpdateBookingTest extends BaseTest {
     // Test case 7 : checkout before checkin
     // ============================================================
 
-    @Test(groups = {"regression"})
+    @Test(groups = {"negative"})
     @Story("Full Update Booking (PUT)")
     @Description("Negative Test: Verify that a full update with checkout before checkin returns 400 Bad Request.")
     @Severity(SeverityLevel.NORMAL)
