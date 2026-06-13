@@ -1,42 +1,75 @@
-name: REST Assured API Tests
+  name: REST Assured API Tests
 
-on:
-  push:
-    branches:
-      - main
+  on:
+    push:
+      branches:
+        - main
 
-  pull_request:
-    branches:
-      - main
+    pull_request:
+      branches:
+        - main
 
-jobs:
-  smoke-tests:
-    runs-on: ubuntu-latest
+  permissions:
+    contents: read
+    pages: write
+    id-token: write
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+  jobs:
+    smoke-tests:
+      runs-on: ubuntu-latest
 
-      - name: Setup Java 21
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 21
+      steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v4
 
-      - name: Cache Maven Packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        - name: Setup Java 21
+          uses: actions/setup-java@v4
+          with:
+            distribution: temurin
+            java-version: 21
 
-      - name: Run Smoke Suite
-        run: |
-          mvn clean test \
-          -DsuiteXmlFile=src/test/resources/testng-suites/smoke-suite.xml
+        - name: Cache Maven Packages
+          uses: actions/cache@v4
+          with:
+            path: ~/.m2
+            key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
 
-      - name: Upload Allure Results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-results
-          path: allure-results
+        - name: Run Smoke Suite
+          run: |
+            mvn clean test \
+            -DsuiteXmlFile=src/test/resources/testng-suites/smoke-suite.xml
+
+        - name: Generate Allure Report
+          run: mvn allure:report
+
+        - name: Setup Pages
+          uses: actions/configure-pages@v5
+
+        - name: Upload Pages Artifact
+          uses: actions/upload-pages-artifact@v3
+          with:
+            path: allure-report
+
+        - name: Upload Allure Results
+          if: always()
+          uses: actions/upload-artifact@v4
+          with:
+            name: allure-results
+            path: allure-results
+
+    deploy:
+      needs: smoke-tests
+      runs-on: ubuntu-latest
+
+      environment:
+        name: github-pages
+        url: ${{ steps.deployment.outputs.page_url }}
+
+      permissions:
+        pages: write
+        id-token: write
+
+      steps:
+        - name: Deploy to GitHub Pages
+          id: deployment
+          uses: actions/deploy-pages@v4
