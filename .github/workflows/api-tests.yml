@@ -35,17 +35,6 @@
             mvn clean test \
             -DsuiteXmlFile=src/test/resources/testng-suites/smoke-suite.xml
 
-        - name: Show Allure Files
-          run: |
-            echo "=== Directories ==="
-            find . -type d | grep allure || true
-            
-            echo "=== allure-results ==="
-            ls -la allure-results || true
-            
-            echo "=== target/allure-results ==="
-            ls -la target/allure-results || true
-
         - name: Generate Allure Report
           run: mvn allure:report
 
