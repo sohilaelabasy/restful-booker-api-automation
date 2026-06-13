@@ -42,18 +42,13 @@
         - name: Generate Allure Report
           run: mvn allure:report
 
-        - name: List Generated Files
-          run: |
-            pwd
-            find . -type d | grep allure  
-
         - name: Setup Pages
           uses: actions/configure-pages@v5
 
         - name: Upload Pages Artifact
           uses: actions/upload-pages-artifact@v3
           with:
-            path: allure-report
+            path: target/site/allure-maven-plugin
 
         - name: Upload Allure Results
           if: always()
