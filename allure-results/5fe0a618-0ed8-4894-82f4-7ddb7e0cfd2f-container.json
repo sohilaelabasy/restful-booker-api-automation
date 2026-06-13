@@ -1,1 +1,0 @@
-{"uuid":"5fe0a618-0ed8-4894-82f4-7ddb7e0cfd2f","name":"com.restfulbooker.tests.HealthCheckTest","children":["9c89eb1f-3e05-4ed2-bb39-7860f8985228"],"befores":[{"name":"setUp","status":"passed","stage":"finished","description":"","steps":[],"attachments":[],"parameters":[],"start":1780749947774,"stop":1780749947776}],"afters":[],"start":1780749945796,"stop":1780749961892}

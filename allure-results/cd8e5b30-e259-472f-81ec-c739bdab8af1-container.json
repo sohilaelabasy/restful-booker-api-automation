@@ -1,1 +1,0 @@
-{"uuid":"cd8e5b30-e259-472f-81ec-c739bdab8af1","name":"RestfulBooker Regression Suite","children":["3f0b5368-62d8-4510-ad71-4759ad8e4cb5"],"befores":[{"name":"globalSetUp","status":"passed","stage":"finished","description":"","steps":[],"attachments":[],"parameters":[],"start":1777462229904,"stop":1777462233309}],"afters":[],"start":1777462229876,"stop":1777462305343}
