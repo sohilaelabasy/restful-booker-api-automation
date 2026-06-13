@@ -42,6 +42,11 @@
         - name: Generate Allure Report
           run: mvn allure:report
 
+        - name: List Generated Files
+          run: |
+            pwd
+            find . -type d | grep allure  
+
         - name: Setup Pages
           uses: actions/configure-pages@v5
 
